@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Responsive Landing Page</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<style>
+    /* Reset and base styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  color: green;
+  background: white;
+  line-height: 1.6;
+}
+
+/* Hero Section */
+.hero {
+  background: linear-gradient(100deg, #2563eb 0%, #3cff2b 100%);
+  color: #fff;
+  padding: 60px 15px 50px 15px;
+  text-align: center;
+}
+
+.hero-content {
+  max-width: 650px;
+  margin: 0 auto;
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 18px;
+}
+
+.subheadline {
+  font-size: 1.2rem;
+  margin-bottom: 28px;
+  color: white;
+}
+
+.cta-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-block;
+  padding: 12px 28px;
+  border-radius: 24px;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+  cursor: pointer;
+}
+
+.btn.primary {
+  background: #fff;
+  color: #2563eb;
+  border: none;
+}
+
+.btn.primary:hover,
+.btn.primary:focus {
+  background: #e0e7ef;
+}
+
+.btn.secondary {
+  background: transparent;
+  color: #fff;
+  border: 2px solid #fff;
+}
+
+.btn.secondary:hover,
+.btn.secondary:focus {
+  background: #2563eb;
+  color: #fff;
+  border-color: #e0e7ef;
+}
+
+/* Features Section */
+.features {
+  padding: 55px 18px 40px 18px;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.features-title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 38px;
+  color: #22223b;
+}
+
+.features-grid {
+  display: flex;
+  gap: 32px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.feature {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 10px rgba(40, 70, 146, 0.05);
+  flex: 1 1 260px;
+  max-width: 340px;
+  min-width: 220px;
+  padding: 32px 20px 28px 20px;
+  text-align: center;
+  margin-bottom: 16px;
+  transition: transform 0.15s;
+}
+
+.feature:hover, .feature:focus-within {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 4px 20px rgba(40, 70, 146, 0.09);
+}
+
+.feature-icon {
+  font-size: 2.4rem;
+  margin-bottom: 18px;
+}
+
+.feature-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: green;
+}
+
+.feature-desc {
+  color: #444;
+  font-size: 1rem;
+}
+
+/* Footer Section */
+.footer {
+  background: #22223b;
+  color: white;
+  padding: 28px 15px 16px 15px;
+}
+
+.footer-content {
+  max-width: 1050px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.footer-contact {
+  text-align: center;
+  font-size: 1rem;
+}
+
+.footer-contact a {
+  color: #80c1ff;
+  text-decoration: underline;
+  margin: 0 3px;
+}
+
+.footer-copy {
+  font-size: 0.95rem;
+  color: #a2adc8;
+  margin-top: 4px;
+}
+
+/* Responsive Design */
+@media (max-width: 900px) {
+  .features-grid {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .feature {
+    max-width: 520px;
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .hero h1 {
+    font-size: 2rem;
+  }
+  .features-title {
+    font-size: 1.4rem;
+  }
+  .footer-content {
+    font-size: 0.98rem;
+  }
+  .feature {
+    padding: 28px 10px 22px 10px;
+  }
+}
+
+</style>
+<body>
+  <!-- Hero Section -->
+  <header class="hero">
+    <div class="hero-content">
+      <h1>Enhance Your Knowledge in the Area of Information Technology </h1>
+      <p class="subheadline">Our information technology packages are well equipped with with stuff that suits you. We get you onboard, get trained and be certified to fit the current reality.</p>
+      <div class="cta-buttons">
+        <a href="#" class="btn primary">Sign Up Now</a>
+        <a href="#" class="btn secondary">Learn More</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Features Section -->
+  <main>
+    <sectio class="features">
+      <h2 class="features-title">OUR PACKAGES</h2>
+      <div class="features-grid">
+        <div class="feature">
+          <div class="feature-icon" aria-hidden="true">🧑‍🎓</div>
+          <h3 class="feature-title">ICT Training and Certification</h3>
+          <p class="feature-desc">We train and certify you in the area of information technology. Our training cubicles welcome both beginners and intermediaries for Certificate and Diploma programs respectively .</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon" aria-hidden="true">🖥️</div>
+          <h3 class="feature-title">ICT Consultancy Services</h3>
+          <p class="feature-desc">We help in building your ICT empire. We establish the world class ICT firm for you with competitive advantages .</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon" aria-hidden="true">🖨️</div>
+          <h3 class="feature-title">Printing and Publishing</h3>
+          <p class="feature-desc">We make graphics designs including fliers, banners, invitation card and invitation video. We also make logo design, and we help you publish your books, journals and articles .</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer Section -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-contact">
+        <p>Contact us: <a href="mailto: maralcomputers@gmail.com.com">maralcomputers@gmail.com </a>  <a href="tel: +234-8031317470">+234 8031317470</a></p>
+        <p>Follow us: 
+          <a href="#" aria-label="Twitter">Twitter</a> | 
+          <a href="#" aria-label="Facebook">Facebook</a> | 
+          <a href="#" aria-label="LinkedIn">LinkedIn</a>
+        </p>
+      </div>
+      <div class="footer-copy">
+        <p>&copy; 2025 Maral Computers. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
