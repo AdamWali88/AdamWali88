@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Interactive React App</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .app {
+      text-align: center;
+      padding: 50px;
+      background: yellow;
+      color: blue;
+      min-height: 100vh;
+    }
+
+    .dark {
+      background: #222;
+      color: maroon;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      margin: 10px;
+      cursor: pointer;
+    }
+
+    input {
+      padding: 8px;
+      font-size: 1rem;
+      margin-top: 10px;
+    }
+
+    .message {
+      margin-top: 20px;
+      font-size: 1.2rem;
+    }
+
+    .clock {
+      font-size: 1.5rem;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- React + ReactDOM via CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+
+  <!-- Babel for JSX -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- React App Code -->
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    function App() {
+      const [darkMode, setDarkMode] = useState(false);
+      const [message, setMessage] = useState("");
+      const [name, setName] = useState("");
+      const [time, setTime] = useState(new Date().toLocaleTimeString());
+
+      // Update the clock every second
+      useEffect(() => {
+        const timer = setInterval(() => {
+          setTime(new Date().toLocaleTimeString());
+        }, 1000);
+        return () => clearInterval(timer);
+      }, []);
+
+      const toggleTheme = () => setDarkMode(!darkMode);
+      const sayHello = () => setMessage(`Hello ${name || "World"}! 👋`);
+
+      return (
+        <div className={`app ${darkMode ? 'dark' : ''}`}>
+          <h1>Interactive React App</h1>
+
+          <div className="clock">⏰ {time}</div>
+
+          <input
+            type="text"
+            placeholder="Enter your name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+
+          <div>
+            <button onClick={sayHello}>Say Hello</button>
+            <button onClick={toggleTheme}>
+              Switch to {darkMode ? 'Light' : 'Dark'} Mode
+            </button>
+          </div>
+
+          {message && <div className="message">{message}</div>}
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
