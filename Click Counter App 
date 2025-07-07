@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Click Counter App</title>
+  <!-- React & ReactDOM CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f3f3f3;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .counter-container {
+      max-width: 400px;
+      width: 75%;
+      padding: 2rem;
+      text-align: center;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      background-color: #fdfdfd;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 1rem;
+    }
+
+    .counter-display {
+      font-size: 4rem;
+      font-weight: bold;
+      color: #007bff;
+      margin-bottom: 1rem;
+    }
+
+    .limit-message {
+      color: red;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background-color: maroon;
+      color: white;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn:hover:not(:disabled) {
+      background-color: #0056b3;
+    }
+
+    .btn:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- React Code -->
+  <script type="text/babel">
+    const { useState } = React;
+
+    function CounterApp() {
+      const [count, setCount] = useState(0);
+      const LIMIT = 20;
+
+      const increase = () => {
+        if (count < LIMIT) {
+          setCount(count + 1);
+        }
+      };
+
+      const decrease = () => {
+        if (count > 0) {
+          setCount(count - 1);
+        }
+      };
+
+      return (
+        <div className="counter-container">
+          <h1>Click Counter</h1>
+          <div className="counter-display">{count}</div>
+
+          {count === LIMIT && (
+            <p className="limit-message">You've reached the limit!</p>
+          )}
+
+          <div className="button-group">
+            <button className="btn" onClick={increase}>Increase</button>
+            <button className="btn" onClick={decrease} disabled={count === 0}>
+              Decrease
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<CounterApp />);
+  </script>
+</body>
+</html>
