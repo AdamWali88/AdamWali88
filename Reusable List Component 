@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>React User List (Custom)</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f4f4;
+      color: #333;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    body.dark {
+      background-color: #121212;
+      color: #f0f0f0;
+    }
+
+    .container {
+      max-width: 850px;
+      margin: 0 auto;
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: background-color 0.3s;
+    }
+
+    body.dark .container {
+      background-color: #1e1e1e;
+    }
+
+    h1, h2 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .search-bar {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .search-bar input {
+      padding: 10px;
+      width: 80%;
+      max-width: 400px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .toggle-btn {
+      display: block;
+      margin: 0 auto 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      background: #f9f9f9;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      transition: background 0.3s;
+    }
+
+    li:hover {
+      background: #eaeaea;
+    }
+
+    body.dark li {
+      background: #2a2a2a;
+    }
+
+    li h3 {
+      margin: 0 0 10px;
+    }
+
+    li p {
+      margin: 4px 0;
+    }
+
+    a {
+      color: #007bff;
+    }
+
+    .loading, .error, .empty {
+      text-align: center;
+      font-size: 18px;
+    }
+
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- React + Babel CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- React Code -->
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    const List = ({ items, renderItem }) => {
+      if (!items || items.length === 0) {
+        return <p className="empty">No users found 🫥</p>;
+      }
+
+      return (
+        <ul>
+          {items.map((item, index) => (
+            <li key={index}>{renderItem(item)}</li>
+          ))}
+        </ul>
+      );
+    };
+
+    const UsersList = () => {
+      const [users, setUsers] = useState([]);
+      const [filtered, setFiltered] = useState([]);
+      const [search, setSearch] = useState('');
+      const [loading, setLoading] = useState(true);
+      const [error, setError] = useState(null);
+      const [darkMode, setDarkMode] = useState(false);
+
+      useEffect(() => {
+        fetch('https://jsonplaceholder.typicode.com/users')
+          .then((res) => {
+            if (!res.ok) throw new Error('Network response failed');
+            return res.json();
+          })
+          .then((data) => {
+            setUsers(data);
+            setFiltered(data);
+            setLoading(false);
+          })
+          .catch((err) => {
+            setError(err.message);
+            setLoading(false);
+          });
+      }, []);
+
+      const handleSearch = (e) => {
+        const val = e.target.value.toLowerCase();
+        setSearch(val);
+        const filteredUsers = users.filter(user =>
+          user.name.toLowerCase().includes(val)
+        );
+        setFiltered(filteredUsers);
+      };
+
+      const toggleTheme = () => {
+        setDarkMode(!darkMode);
+        document.body.classList.toggle('dark');
+      };
+
+      if (loading) return <div className="loading">⏳ Loading users...</div>;
+      if (error) return <div className="error">❌ {error}</div>;
+
+      return (
+        <div className="container">
+          <button className="toggle-btn" onClick={toggleTheme}>
+            {darkMode ? '🌞 Light Mode' : '🌙 Dark Mode'}
+          </button>
+
+          <h2>👥 User Directory</h2>
+
+          <div className="search-bar">
+            <input
+              type="text"
+              value={search}
+              onChange={handleSearch}
+              placeholder="🔍 Search users by name"
+            />
+          </div>
+
+          <List
+            items={filtered}
+            renderItem={(user) => (
+              <div>
+                <h3>🧑 {user.name}</h3>
+                <p>📧 Email: {user.email}</p>
+                <p>📞 Phone: {user.phone}</p>
+                <p>🌐 Website: <a href={`http://${user.website}`} target="_blank">{user.website}</a></p>
+                <p>🏢 Company: {user.company.name}</p>
+                <p>🏙️ City: {user.address.city}</p>
+              </div>
+            )}
+          />
+        </div>
+      );
+    };
+
+    const App = () => (
+      <div>
+        <h1>🚀 React Custom List App</h1>
+        <UsersList />
+      </div>
+    );
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
