@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CRUD API Simulator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f2f2f2;
+      padding: 20px;
+      color: #333;
+    }
+
+    h1 {
+      text-align: center;
+      color: blue;
+    }
+
+    form, .item {
+      background: white;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button {
+      padding: 8px 16px;
+      border: none;
+      background: #4CAF50;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #45a049;
+    }
+
+    .item-actions {
+      margin-top: 10px;
+    }
+
+    .item-actions button {
+      background: #f44336;
+      margin-left: 10px;
+    }
+
+    .item-actions button:hover {
+      background: #e53935;
+    }
+  </style>
+</head>
+<body>
+  <h1>📦 CRUD API Simulator</h1>
+
+  <form id="itemForm">
+    <h3>Create / Update Item</h3>
+    <input type="number" id="itemId" placeholder="ID (for Update)" />
+    <input type="text" id="itemName" placeholder="Name" required />
+    <textarea id="itemDescription" placeholder="Description" required></textarea>
+    <button type="submit">Save Item</button>
+  </form>
+
+  <div id="itemsList"></div>
+
+  <script>
+    let items = [
+      { id: 1, name: "Item One", description: "First item" },
+      { id: 2, name: "Item Two", description: "Second item" }
+    ];
+
+    function renderItems() {
+      const list = document.getElementById('itemsList');
+      list.innerHTML = '';
+      items.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.innerHTML = `
+          <strong>ID: ${item.id}</strong><br>
+          <strong>${item.name}</strong><br>
+          <em>${item.description}</em>
+          <div class="item-actions">
+            <button onclick="editItem(${item.id})">Edit</button>
+            <button onclick="deleteItem(${item.id})">Delete</button>
+          </div>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    function editItem(id) {
+      const item = items.find(i => i.id === id);
+      if (item) {
+        document.getElementById('itemId').value = item.id;
+        document.getElementById('itemName').value = item.name;
+        document.getElementById('itemDescription').value = item.description;
+      }
+    }
+
+    function deleteItem(id) {
+      items = items.filter(i => i.id !== id);
+      renderItems();
+    }
+
+    document.getElementById('itemForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const id = parseInt(document.getElementById('itemId').value);
+      const name = document.getElementById('itemName').value.trim();
+      const description = document.getElementById('itemDescription').value.trim();
+
+      if (!name || !description) {
+        alert("Name and description are required!");
+        return;
+      }
+
+      const existingIndex = items.findIndex(i => i.id === id);
+
+      if (existingIndex !== -1 && !isNaN(id)) {
+        // Update
+        items[existingIndex].name = name;
+        items[existingIndex].description = description;
+      } else {
+        // Create
+        const newId = items.length ? Math.max(...items.map(i => i.id)) + 1 : 1;
+        items.push({ id: newId, name, description });
+      }
+
+      // Reset
+      document.getElementById('itemForm').reset();
+      renderItems();
+    });
+
+    renderItems();
+  </script>
+</body>
+</html>
