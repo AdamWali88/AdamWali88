@@ -1,0 +1,80 @@
+from fastapi import FastAPI, Form, UploadFile, Depends
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+import pandas as pd
+import pickle
+import secrets
+import africastalking
+
+app = FastAPI(title="Kaduna Flood Alert Backend")
+
+# --- CORS ---
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Replace "*" with your Netlify URL for security
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# --- Security ---
+security = HTTPBasic()
+ADMIN_USER = "admin"
+ADMIN_PASS = "1234"
+
+def authenticate(credentials: HTTPBasicCredentials = Depends(security)):
+    correct_user = secrets.compare_digest(credentials.username, ADMIN_USER)
+    correct_pass = secrets.compare_digest(credentials.password, ADMIN_PASS)
+    if not (correct_user and correct_pass):
+        return JSONResponse(status_code=401, content={"error": "Unauthorized"})
+    return credentials.username
+
+# --- Load ML Model ---
+try:
+    with open("flood_model.pkl", "rb") as f:
+        model = pickle.load(f)
+except:
+    model = None  # Placeholder if no model yet
+
+# --- SMS Setup ---
+africastalking.initialize("YOUR_USERNAME", "YOUR_API_KEY")
+sms = africastalking.SMS
+
+# --- In-memory data ---
+wards_db = {}
+sms_logs = []
+
+@app.get("/")
+def home():
+    return {"message": "Flood Alert API is running"}
+
+@app.post("/admin/upload_contacts")
+def upload_contacts(file: UploadFile, username: str = Depends(authenticate)):
+    df = pd.read_csv(file.file)
+    for _, row in df.iterrows():
+        ward = row["ward"]
+        contact = row["contact"]
+        wards_db[ward] = contact
+    return {"status": "Contacts uploaded", "wards": list(wards_db.keys())}
+
+@app.post("/predict")
+def predict_flood(ward: str = Form(...), rainfall: float = Form(...), humidity: float = Form(...)):
+    if model is None:
+        return {"ward": ward, "risk": "Model not loaded"}
+    features = [[rainfall, humidity]]
+    pred = model.predict(features)[0]
+    risk_map = {0: "Safe", 1: "Medium", 2: "High Risk"}
+    risk_level = risk_map.get(pred, "Unknown")
+    if ward in wards_db:
+        message = f"Flood Alert for {ward}: {risk_level}"
+        try:
+            sms.send(message, [wards_db[ward]])
+            sms_logs.append({"ward": ward, "msg": message})
+        except Exception as e:
+            return {"ward": ward, "risk": risk_level, "sms": f"Failed: {str(e)}"}
+    return {"ward": ward, "risk": risk_level}
+
+@app.get("/admin/dashboard")
+def dashboard(username: str = Depends(authenticate)):
+    return {"wards": wards_db, "sms_logs": sms_logs}
